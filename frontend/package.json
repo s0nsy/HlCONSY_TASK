@@ -1,0 +1,25 @@
+{
+  "name": "hiconcy-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "vue-tsc -b"
+  },
+  "dependencies": {
+    "naive-ui": "^2.45.3",
+    "pinia": "^3.0.4",
+    "vue": "^3.5.45",
+    "vue-router": "^4.6.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.11",
+    "@vue/tsconfig": "^0.8.1",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.0",
+    "vue-tsc": "^3.3.14"
+  }
+}

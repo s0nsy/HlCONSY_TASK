@@ -6,7 +6,7 @@ import { annualRemaining, offGrants, pickOffGrantFor, remoteRemaining } from '..
 import { BusinessDayService } from '../common/calendar/business-day.service.js';
 import { ClockService } from '../common/clock/clock.service.js';
 import type { AuthUser } from '../common/decorators.js';
-import { AppException, ErrorCode } from '../common/errors.js';
+import { AppException, ERROR_MESSAGES, ErrorCode } from '../common/errors.js';
 import { dateOf, fromEpoch, labelDateTime, monthOf } from '../common/time.js';
 import { APP_CONFIG, type AppConfig } from '../config/app-config.js';
 import { User } from '../users/user.entity.js';
@@ -270,6 +270,7 @@ export class RequestsService {
     return {
       type,
       targetDate,
+      problemMessages: problems.map((c) => ({ code: c, message: ERROR_MESSAGES[c] })),
       deadline: deadline ? { iso: deadline.iso, label: deadline.label, passed: deadline.passed } : null,
       balance,
       problems,
