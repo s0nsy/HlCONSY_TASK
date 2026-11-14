@@ -1,0 +1,21 @@
+{
+  "name": "hiconcy",
+  "version": "0.1.0",
+  "description": "팀 근태관리 시스템 (Vue 3 + NestJS)",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n BE,FE -c blue,green \"npm run dev -w backend\" \"npm run dev -w frontend\"",
+    "build": "npm run build -w backend && npm run build -w frontend",
+    "start": "npm run start:prod -w backend",
+    "test": "npm test -w backend",
+    "lint": "npm run lint -w backend"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.7"
+  }
+}
