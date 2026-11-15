@@ -86,7 +86,7 @@ REQUEST.md          요구사항 (단일 진실 공급원)
 | `DATABASE_PATH`                          | –           | `backend/data/hiconsy.sqlite` | SQLite 파일 경로                                                                       |
 | `STATIC_DIR`                             | –           | 없음                          | 빌드된 화면(`frontend/dist`) 경로. 지정하면 API 서버가 화면도 함께 서빙 (배포용)       |
 | `VITE_DEMO` (프론트 빌드 시)             | –           | 없음                          | `true` 로 빌드하면 디버그 패널 노출 + IP 위장 값이 없을 때 연구실 IP(127.0.0.1)로 가정 |
-| `OBSERVE_APP_KEY` / `OBSERVE_APP_SECRET` | –           | 자리표시자                    | NestJS Observe 연결 (`npx @nestjs/observe link`)                                       |
+| `OBSERVE_APP_KEY` / `OBSERVE_APP_SECRET` | –           | 없음                          | NestJS Observe 연결 (`npx @nestjs/observe link`). **둘 다 있을 때만** 모니터링을 켬     |
 
 ### 시드 계정
 
