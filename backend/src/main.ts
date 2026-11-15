@@ -8,7 +8,7 @@ import { configureApp } from './configure-app.js';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    ...(OBSERVE_ENABLED ? { instrument: ObserveInstrument } : {}),
+    instrument: OBSERVE_ENABLED ? ObserveInstrument : undefined,
   });
   const config = configureApp(app);
 
