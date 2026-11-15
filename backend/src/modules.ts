@@ -23,6 +23,7 @@ import { DashboardController } from './dashboard/dashboard.controller.js';
 import { DashboardService } from './dashboard/dashboard.service.js';
 import { ENTITIES } from './database/entities.js';
 import { DevController } from './dev/dev.controller.js';
+import { ScenarioService } from './dev/scenario.service.js';
 import { RequestPdfService } from './requests/request-pdf.service.js';
 import { RequestsController } from './requests/requests.controller.js';
 import { RequestsService } from './requests/requests.service.js';
@@ -99,7 +100,11 @@ export class DashboardModule {}
 export class SettlementModule {}
 
 /** ENABLE_TIME_TRAVEL=true 일 때만 import 된다 */
-@Module({ controllers: [DevController] })
+@Module({
+  imports: [RequestsModule, AttendanceModule],
+  controllers: [DevController],
+  providers: [ScenarioService],
+})
 export class DevModule {}
 
 @Module({ providers: [SeedService], exports: [SeedService] })
