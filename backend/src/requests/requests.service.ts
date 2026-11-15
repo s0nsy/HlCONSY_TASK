@@ -54,7 +54,7 @@ export class RequestsService {
   }
 
   /**
-   * R-9 [추가 결정]: 사용일이 되었는데 PENDING 인 건은 EXPIRED 로 바꾸고 예약분을 돌려준다.
+   * R-9 (docs/policy.md D-3): 사용일이 되었는데 PENDING 인 건은 EXPIRED 로 바꾸고 예약분을 돌려준다.
    * 배치 대신 조회·변경 API 진입 시 lazy 하게 처리 (시간 조작과 맞물리도록).
    */
   async expireStale(): Promise<void> {

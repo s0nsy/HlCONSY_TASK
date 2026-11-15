@@ -1,7 +1,7 @@
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 export type RequestType = 'ANNUAL' | 'REMOTE' | 'OFF' | 'HOLIDAY_WORK';
-/** EXPIRED: 사용일이 될 때까지 승인되지 않아 효력을 잃은 건 (R-9, [추가 결정]) */
+/** EXPIRED: 사용일이 될 때까지 승인되지 않아 효력을 잃은 건 (R-9, docs/policy.md D-3) */
 export type RequestStatus =
   | 'PENDING'
   | 'APPROVED'
