@@ -207,7 +207,7 @@ export class RequestsService {
 
   async listMine(userId: number) {
     await this.expireStale();
-    const rows = await this.repo.find({ where: { userId }, order: { targetDate: 'DESC', id: 'DESC' } });
+    const rows = await this.repo.find({ where: { userId }, order: { createdAt: 'DESC', id: 'DESC' } });
     return rows.map((r) => this.view(r));
   }
 
@@ -215,7 +215,7 @@ export class RequestsService {
     await this.expireStale();
     const rows = await this.repo.find({
       where: status ? { status } : {},
-      order: { targetDate: 'DESC', id: 'DESC' },
+      order: { createdAt: 'DESC', id: 'DESC' },
     });
     const users = new Map((await this.users.find()).map((u) => [u.id, u.name]));
     return rows.map((r) => ({ ...this.view(r), userName: users.get(r.userId) ?? '?' }));
