@@ -62,7 +62,7 @@ async function logout() {
       <NDialogProvider>
         <header class="header">
           <div class="header-inner">
-            <strong class="brand">hiconcy 근태</strong>
+            <strong class="brand">hiconsy 근태</strong>
             <NMenu v-if="showChrome" mode="horizontal" :options="menu" :value="route.path" class="nav" responsive />
             <div class="right">
               <span class="server-clock mono" title="서버 기준 현재 시각 (Asia/Seoul)">

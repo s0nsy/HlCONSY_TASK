@@ -39,7 +39,7 @@ export function loadConfig(overrides: Partial<AppConfig> = {}): AppConfig {
     port: Number(env.PORT ?? 3000),
     databasePath:
       env.DATABASE_PATH ??
-      join(import.meta.dirname, '..', '..', 'data', 'hiconcy.sqlite'),
+      join(import.meta.dirname, '..', '..', 'data', 'hiconsy.sqlite'),
     jwtSecret: env.JWT_SECRET ?? 'dev-only-secret-change-me',
     enableTimeTravel: bool(env.ENABLE_TIME_TRAVEL, false),
     enableIpOverride: bool(env.ENABLE_IP_OVERRIDE, false),

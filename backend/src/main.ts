@@ -11,7 +11,7 @@ async function bootstrap() {
   const config = configureApp(app);
   await app.listen(config.port);
   console.log(
-    `hiconcy API http://localhost:${config.port}/api  ` +
+    `hiconsy API http://localhost:${config.port}/api  ` +
       `(timeTravel=${config.enableTimeTravel}, ipOverride=${config.enableIpOverride}, requireApproval=${config.requireApproval})`,
   );
 }

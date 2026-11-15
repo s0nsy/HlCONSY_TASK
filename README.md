@@ -1,4 +1,4 @@
-# hiconcy — 팀 근태관리 시스템
+# hiconsy — 팀 근태관리 시스템
 
 Vue 3 + NestJS 로 만든 팀 내부용 근태관리 웹 서비스입니다. 출퇴근 등록, 지각·조퇴 판정, 연차·재택·OFF·주말/공휴일 근무 신청과 잔여 계산, IP 기반 접속 제한, 팀 현황 대시보드, 전체 인터랙션 이력을 제공합니다.
 모든 시간 판정은 **서버 시각(Asia/Seoul)** 기준이며, 개발 모드에서 서버의 "현재 시각"과 클라이언트 IP를 바꿔 가며 테스트할 수 있습니다.
@@ -17,7 +17,7 @@ npm run dev      # 백엔드(:3000) + 프론트엔드(:5173) 동시 실행
 ```
 
 - 브라우저에서 <http://localhost:5173> 접속 → 시드 계정으로 로그인.
-- 최초 실행 시 `backend/data/hiconcy.sqlite` 가 만들어지고 계정·공휴일·연구실 IP 가 자동으로 들어갑니다.
+- 최초 실행 시 `backend/data/hiconsy.sqlite` 가 만들어지고 계정·공휴일·연구실 IP 가 자동으로 들어갑니다.
   초기화하려면 서버를 끄고 `backend/data/` 를 지우면 됩니다.
 - 프론트엔드 개발 서버가 `/api` 를 백엔드로 프록시하므로, 로컬 접속은 백엔드에서 `127.0.0.1`(연구실 IP)로 보입니다.
 
@@ -59,7 +59,7 @@ REQUEST.md          요구사항 (단일 진실 공급원)
 | `LAB_IPS` | `127.0.0.1` | `127.0.0.1` | 연구실 IP (쉼표 구분). 부팅 때 `allowed_ip` 테이블에 없는 것만 추가 |
 | `JWT_SECRET` | 개발용 값 | 개발용 값 | 로그인 쿠키(JWT) 서명 키. **운영에서는 반드시 변경** |
 | `COOKIE_SECURE` | – | `false` | HTTPS 운영 시 `true` |
-| `DATABASE_PATH` | – | `backend/data/hiconcy.sqlite` | SQLite 파일 경로 |
+| `DATABASE_PATH` | – | `backend/data/hiconsy.sqlite` | SQLite 파일 경로 |
 | `OBSERVE_APP_KEY` / `OBSERVE_APP_SECRET` | – | 자리표시자 | NestJS Observe 연결 (`npx @nestjs/observe link`) |
 
 ### 시드 계정

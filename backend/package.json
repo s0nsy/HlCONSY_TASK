@@ -1,5 +1,5 @@
 {
-  "name": "hiconcy-backend",
+  "name": "hiconsy-backend",
   "version": "0.1.0",
   "description": "팀 근태관리 시스템 — NestJS API",
   "private": true,

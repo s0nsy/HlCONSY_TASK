@@ -42,5 +42,5 @@ router.beforeEach(async (to) => {
 });
 
 router.afterEach((to) => {
-  document.title = `${to.meta.title ?? ''} · hiconcy 근태관리`;
+  document.title = `${to.meta.title ?? ''} · hiconsy 근태관리`;
 });

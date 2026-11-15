@@ -20,7 +20,7 @@ export class ApiError extends Error {
   }
 }
 
-const IP_KEY = 'hiconcy.debugIp';
+const IP_KEY = 'hiconsy.debugIp';
 
 export function getDebugIp(): string {
   try {
