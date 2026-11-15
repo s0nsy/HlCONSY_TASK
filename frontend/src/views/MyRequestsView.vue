@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NButton, NCard, NDataTable, NTag, useDialog, useMessage, type DataTableColumns } from 'naive-ui';
+import { NButton, NCard, NDataTable, NEllipsis, NTag, useDialog, useMessage, type DataTableColumns } from 'naive-ui';
 import { h, ref, watch } from 'vue';
 import { api } from '../api/client';
 import type { WorkRequest } from '../api/types';
@@ -60,7 +60,14 @@ const columns: DataTableColumns<WorkRequest> = [
     render: (r) =>
       h('span', {}, [
         h(NTag, { type: STATUS_TAG[r.status], size: 'small' }, () => STATUS_LABEL[r.status]),
-        r.rejectReason ? h('div', { class: 'muted', style: 'font-size:12px' }, `반려 사유: ${r.rejectReason}`) : null,
+        // 긴 반려 사유로 행이 커지지 않도록 한 줄 말줄임 + 툴팁(전체 내용)
+        r.rejectReason
+          ? h(
+              NEllipsis,
+              { class: 'muted', style: 'display:block;max-width:200px;font-size:12px', tooltip: { contentStyle: { maxWidth: '320px' } } },
+              () => `반려 사유: ${r.rejectReason}`,
+            )
+          : null,
       ]),
   },
   { title: '신청 시각', key: 'createdAt', render: (r) => fmtDateTime(r.createdAt) },
