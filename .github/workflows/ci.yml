@@ -1,0 +1,39 @@
+# push·PR 마다 깨끗한 환경에서 lint → 테스트 → 빌드를 돌린다.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# 같은 브랜치에 연달아 push 하면 이전 실행은 취소
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: 의존성 설치
+        run: npm ci
+
+      - name: Lint (backend oxlint)
+        run: npm run lint
+
+      - name: 테스트 (판정 함수 단위 + 9장 시나리오 통합 + 원클릭 재현)
+        run: npm test
+
+      - name: 빌드 (backend + frontend 타입 검사·번들, 데모 모드)
+        run: npm run build
+        env:
+          VITE_DEMO: 'true'

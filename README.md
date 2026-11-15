@@ -1,5 +1,7 @@
 # hiconsy — 팀 근태관리 시스템
 
+[![CI](https://github.com/s0nsy/hiconsy/actions/workflows/ci.yml/badge.svg)](https://github.com/s0nsy/hiconsy/actions/workflows/ci.yml)
+
 Vue 3 + NestJS 로 만든 팀 내부용 근태관리 웹 서비스입니다. 출퇴근 등록, 지각·조퇴 판정, 연차·재택·OFF·주말/공휴일 근무 신청과 잔여 계산, IP 기반 접속 제한, 팀 현황 대시보드, 전체 인터랙션 이력을 제공합니다.
 모든 시간 판정은 **서버 시각(Asia/Seoul)** 기준이며, 개발 모드에서 서버의 "현재 시각"과 클라이언트 IP를 바꿔 가며 테스트할 수 있습니다.
 
@@ -268,7 +270,7 @@ curl -X PUT http://localhost:3000/api/dev/clock -H 'content-type: application/js
 
 - **시각 조작 상태는 프로세스 메모리**에 있습니다. 재시작하면 real 로 돌아가고, 서버를 여러 대 띄우면 공유되지 않습니다.
 - 스키마는 TypeORM `synchronize: true` 로 자동 생성합니다. PostgreSQL 운영 전환 시 마이그레이션을 만들어야 합니다.
-- 프론트엔드는 타입 검사·빌드와 API 연동(프록시 경유) 확인까지 했고, 브라우저 자동화(E2E) 테스트는 없습니다.
+- 브라우저 자동화(E2E) 테스트는 범위에서 뺐습니다. 9장 시나리오는 API 통합 테스트(`backend/test/scenarios.spec.ts`, `dev-scenarios.spec.ts`)로 자동 검증하고, 화면은 디버그 패널의 원클릭 재현으로 확인합니다. 프론트엔드는 CI 에서 타입 검사·빌드까지 확인합니다.
 - 연구실 IP 는 정확히 일치하는 값만 허용합니다(CIDR 대역 미지원). IP 위장 헤더는 개발 전용이므로 운영에서는 `ENABLE_IP_OVERRIDE` 를 끄세요.
 - 공휴일 시드는 확인 가능한 범위에서 넣었습니다(D-21). 임시공휴일 등은 리드가 화면에서 관리합니다.
 - 데모 배포는 `STATIC_DIR` 로 API 서버가 화면까지 서빙합니다. 실제 운영이라면 `frontend/dist` 를 리버스 프록시(nginx·CDN)에서 서빙하고 `/api` 만 백엔드로 넘기는 편이 낫습니다. 어느 쪽이든 프록시 뒤라면 `TRUST_PROXY` 를 맞게 설정해야 실제 클라이언트 IP 가 잡힙니다.
