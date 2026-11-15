@@ -17,6 +17,8 @@ export interface AppConfig {
   labIps: string[];
   /** 쿠키 Secure 플래그 (HTTPS 운영 시 true) */
   cookieSecure: boolean;
+  /** 빌드된 프론트엔드(frontend/dist) 경로. 있으면 API 와 같은 서버에서 화면도 서빙한다 (배포용) */
+  staticDir: string | null;
 }
 
 export const APP_CONFIG = Symbol('APP_CONFIG');
@@ -50,6 +52,7 @@ export function loadConfig(overrides: Partial<AppConfig> = {}): AppConfig {
       .map((s) => s.trim())
       .filter(Boolean),
     cookieSecure: bool(env.COOKIE_SECURE, false),
+    staticDir: env.STATIC_DIR || null,
     ...overrides,
   };
 }

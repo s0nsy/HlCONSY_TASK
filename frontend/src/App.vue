@@ -14,6 +14,7 @@ import {
 } from "naive-ui";
 import { computed, h, onMounted, ref } from "vue";
 import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
+import { IS_DEMO } from "./api/client";
 import DebugPanel from "./components/DebugPanel.vue";
 import { useAuthStore } from "./stores/auth";
 import { useClockStore } from "./stores/clock";
@@ -24,7 +25,8 @@ const route = useRoute();
 const router = useRouter();
 const osTheme = useOsTheme();
 const theme = computed(() => (osTheme.value === "dark" ? darkTheme : null));
-const isDev = import.meta.env.DEV;
+// 디버그 패널: 개발 모드 또는 데모 빌드(VITE_DEMO=true)
+const isDev = import.meta.env.DEV || IS_DEMO;
 const logoFailed = ref(false);
 
 onMounted(() => clock.start());

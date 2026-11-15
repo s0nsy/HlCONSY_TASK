@@ -13,7 +13,7 @@ import {
 } from 'naive-ui';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { ApiError, api, getDebugIp, setDebugIp } from '../api/client';
+import { ApiError, IS_DEMO, api, getDebugIp, setDebugIp } from '../api/client';
 import { useAppStore } from '../stores/app';
 import { useAuthStore } from '../stores/auth';
 import { useClockStore } from '../stores/clock';
@@ -182,7 +182,7 @@ function resetAll() {
 
 async function applyIp() {
   setDebugIp(ip.value.trim());
-  message.info(ip.value.trim() ? `내 IP를 ${ip.value.trim()} 로 가정` : 'IP 위장 해제');
+  message.info(ip.value.trim() ? `내 IP를 ${ip.value.trim()} 로 가정` : IS_DEMO ? 'IP 위장 해제 — 데모라서 연구실 IP(127.0.0.1)로 가정합니다' : 'IP 위장 해제');
   await afterChange();
 }
 

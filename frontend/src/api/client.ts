@@ -22,6 +22,10 @@ export class ApiError extends Error {
 
 const IP_KEY = 'hiconsy.debugIp';
 
+/** 데모 빌드: 방문자 실제 IP 는 연구실 IP 가 아니므로, 위장 값이 없으면 연구실 IP 로 가정한다 */
+export const IS_DEMO = import.meta.env.VITE_DEMO === 'true';
+const DEMO_DEFAULT_IP = '127.0.0.1';
+
 export function getDebugIp(): string {
   try {
     return localStorage.getItem(IP_KEY) ?? '';
@@ -48,7 +52,7 @@ export function onApiError(fn: Listener) {
 function headers(json: boolean): Record<string, string> {
   const h: Record<string, string> = {};
   if (json) h['Content-Type'] = 'application/json';
-  const ip = getDebugIp();
+  const ip = getDebugIp() || (IS_DEMO ? DEMO_DEFAULT_IP : '');
   if (ip) h['X-Debug-Client-IP'] = ip;
   return h;
 }

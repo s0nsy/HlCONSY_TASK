@@ -1,0 +1,34 @@
+# Render Blueprint — 데모 배포 설정 (https://render.com/docs/blueprint-spec)
+# Render 대시보드 → New → Blueprint → 이 레포 선택하면 아래 설정으로 서버가 만들어진다.
+services:
+  - type: web
+    name: hiconsy-demo
+    runtime: docker            # 레포 루트의 Dockerfile 로 빌드
+    plan: free                 # 15분 미사용 시 잠듦, 디스크 일시적(재시작하면 시드 상태로 초기화)
+    region: singapore          # 한국에서 가장 가까운 리전
+    branch: main
+    autoDeploy: true           # main 에 push 하면 자동 재배포
+    healthCheckPath: /         # 화면(index.html). /api 는 IP 검사를 받아서 헬스 체크용으로 못 쓴다
+    envVars:
+      # 데모: 디버그 패널로 서버 시각·IP 를 바꿀 수 있게
+      - key: ENABLE_TIME_TRAVEL
+        value: "true"
+      - key: ENABLE_IP_OVERRIDE
+        value: "true"
+      - key: REQUIRE_APPROVAL
+        value: "true"
+      - key: LAB_IPS
+        value: 127.0.0.1
+      # Render 는 프록시 뒤에서 돈다 → X-Forwarded-For 로 실제 IP 확인, HTTPS 라 Secure 쿠키
+      - key: TRUST_PROXY
+        value: "true"
+      - key: COOKIE_SECURE
+        value: "true"
+      # 레포에 비밀값을 두지 않도록 Render 가 무작위로 생성
+      - key: JWT_SECRET
+        generateValue: true
+      # (선택) NestJS Observe 모니터링 키. 대시보드에서 직접 입력
+      - key: OBSERVE_APP_KEY
+        sync: false
+      - key: OBSERVE_APP_SECRET
+        sync: false
