@@ -6,8 +6,11 @@ import { AppException, ErrorCode } from '../common/errors.js';
 import { RequestPdfService } from './request-pdf.service.js';
 import { RequestsService } from './requests.service.js';
 
-const Type = z.enum(['ANNUAL', 'REMOTE', 'OFF', 'HOLIDAY_WORK']);
+// 형식만 본다. 실제 날짜 여부(2026-02-30 등)는 validateTargetDate 가 REQ_INVALID_DATE 로 판정하고,
+// 미리보기가 그 코드를 화면에 그대로 보여 준다
 const DateStr = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+
+const Type = z.enum(['ANNUAL', 'REMOTE', 'OFF', 'HOLIDAY_WORK']);
 const CreateSchema = z.object({
   type: Type,
   targetDate: DateStr,

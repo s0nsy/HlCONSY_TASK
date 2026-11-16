@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
 import { z } from 'zod';
+import { DateStr } from '../schemas.js';
 import { Audit, Roles } from '../decorators.js';
 import { BusinessDayService } from './business-day.service.js';
 
-const DateStr = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const CreateSchema = z.object({ date: DateStr, name: z.string().trim().min(1).max(100) });
 const YearQuery = z.object({ year: z.string().regex(/^\d{4}$/).optional() });
 

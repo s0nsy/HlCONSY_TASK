@@ -1,8 +1,9 @@
-import { Body, Controller, Get, HttpCode, Inject, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Inject, Post, Res, UseGuards } from '@nestjs/common';
 import type { Response } from 'express';
 import { z } from 'zod';
 import { Audit, type AuthUser, CurrentUser, Public } from '../common/decorators.js';
 import { APP_CONFIG, type AppConfig } from '../config/app-config.js';
+import { LoginThrottlerGuard } from './auth.guards.js';
 import { AUTH_COOKIE, AuthService } from './auth.service.js';
 
 const LoginSchema = z.object({
@@ -20,6 +21,7 @@ export class AuthController {
   /** FN-SYS-02 */
   @Public()
   @Post('login')
+  @UseGuards(LoginThrottlerGuard)
   @HttpCode(200)
   @Audit('LOGIN', 'LOGIN_FAIL')
   async login(

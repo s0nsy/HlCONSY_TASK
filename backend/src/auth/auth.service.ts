@@ -10,6 +10,9 @@ import { User } from '../users/user.entity.js';
 
 export const AUTH_COOKIE = 'hc_token';
 
+/** 없는 아이디용 가짜 해시. 시드 비밀번호와 같은 cost(10)여야 걸리는 시간이 같다 */
+const DUMMY_HASH = bcrypt.hashSync('dummy-password-for-timing', 10);
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -19,7 +22,9 @@ export class AuthService {
 
   async login(loginId: string, password: string): Promise<{ token: string; user: AuthUser }> {
     const user = await this.users.findOneBy({ loginId });
-    if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+    // 아이디가 없어도 bcrypt 비교를 한 번 돌려 응답 시간으로 아이디 존재 여부를 알 수 없게 한다
+    const ok = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_HASH);
+    if (!user || !ok) {
       throw new AppException(ErrorCode.AUTH_INVALID_CREDENTIALS);
     }
     const token = await this.jwt.signAsync({ sub: user.id });

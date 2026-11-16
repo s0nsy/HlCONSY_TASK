@@ -19,9 +19,11 @@ services:
         value: "true"
       - key: LAB_IPS
         value: 127.0.0.1
-      # Render 는 프록시 뒤에서 돈다 → X-Forwarded-For 로 실제 IP 확인, HTTPS 라 Secure 쿠키
+      # Render 는 프록시 1단계 뒤에서 돈다 → X-Forwarded-For 의 맨 오른쪽 1개(Render 가 붙인 실제 IP)만 믿는다.
+      # "true" 로 두면 클라이언트가 보낸 X-Forwarded-For 맨 왼쪽 값을 믿게 되어 IP 제한이 뚫린다.
+      # HTTPS 라 Secure 쿠키
       - key: TRUST_PROXY
-        value: "true"
+        value: "1"
       - key: COOKIE_SECURE
         value: "true"
       # 레포에 비밀값을 두지 않도록 Render 가 무작위로 생성

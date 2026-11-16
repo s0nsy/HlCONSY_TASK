@@ -9,7 +9,7 @@
 | 문서                                           | 내용                                                                       |
 | ---------------------------------------------- | -------------------------------------------------------------------------- |
 | 이 README                                      | 실행 방법 · 기술 스택 · 아키텍처와 컨벤션 · DB 스키마 · 고민한 점          |
-| [`docs/policy.md`](docs/policy.md)             | 근태 제도 해석 규칙과 구현하면서 내린 결정 22건(근거 포함)                 |
+| [`docs/policy.md`](docs/policy.md)             | 근태 제도 해석 규칙과 구현하면서 내린 결정 23건(근거 포함)                 |
 | [`docs/verification.md`](docs/verification.md) | 시간·IP 바꾸는 법, 인수 시나리오 T-01~T-21 재현 방법, 요구사항별 구현 상태 |
 | [`REQUEST.md`](REQUEST.md)                     | 요구사항 정의                                                              |
 
@@ -75,7 +75,7 @@ GitHub Actions 가 push·PR 마다 `npm ci → lint → test → build` 를 실�
 | `ENABLE_TIME_TRAVEL`          | `true`                        | 서버 시각 조작·시나리오 재현 API(`/api/dev/*`) 등록. 운영에서는 `false` |
 | `ENABLE_IP_OVERRIDE`          | `true`                        | `X-Debug-Client-IP` 헤더로 클라이언트 IP 위장 허용. 운영에서는 `false`  |
 | `REQUIRE_APPROVAL`            | `true`                        | `true`: 리드가 승인한 신청만 효력 / `false`: 제출 즉시 승인             |
-| `TRUST_PROXY`                 | `false`                       | express `trust proxy`. 프록시 뒤에서 실제 클라이언트 IP 를 얻을 때 설정 |
+| `TRUST_PROXY`                 | `false`                       | express `trust proxy`. 프록시 뒤면 단계 수(예: `1`)로 설정. `true` 는 X-Forwarded-For 위조로 IP 제한이 뚫려 쓰지 않음 |
 | `LAB_IPS`                     | `127.0.0.1`                   | 연구실 IP (쉼표 구분)                                                   |
 | `JWT_SECRET`                  | 개발용 값                     | 로그인 쿠키(JWT) 서명 키                                                |
 | `COOKIE_SECURE`               | `false`                       | HTTPS 환경에서 `true`                                                   |

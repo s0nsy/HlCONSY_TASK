@@ -28,11 +28,21 @@ function bool(v: string | undefined, def: boolean): boolean {
   return ['1', 'true', 'yes', 'on'].includes(v.toLowerCase());
 }
 
-function trustProxy(v: string | undefined): boolean | number | string {
-  if (v === undefined || v === '' || v === 'false') return false;
-  if (v === 'true') return true;
-  if (/^\d+$/.test(v)) return Number(v);
-  return v; // 'loopback', '10.0.0.0/8' 같은 express 문법 그대로
+/**
+ * TRUST_PROXY 해석. 대소문자·앞뒤 공백 무시 (bool() 과 같은 규칙).
+ * - false/no/off/빈 값 → false (소켓 주소만 사용)
+ * - 숫자 → 믿을 프록시 단계 수 (Render 처럼 프록시 1단계 뒤면 1)
+ * - true/yes/on → true. X-Forwarded-For 맨 왼쪽(클라이언트가 마음대로 넣는 값)을 믿게 되어
+ *   IP 제한을 우회할 수 있다. configureApp 이 경고를 남긴다.
+ * - 그 밖의 값은 'loopback', '10.0.0.0/8' 같은 express 문법으로 그대로 넘긴다.
+ */
+export function parseTrustProxy(v: string | undefined): boolean | number | string {
+  const s = (v ?? '').trim();
+  const lower = s.toLowerCase();
+  if (s === '' || ['false', 'no', 'off'].includes(lower)) return false;
+  if (['true', 'yes', 'on'].includes(lower)) return true;
+  if (/^\d+$/.test(s)) return Number(s);
+  return s;
 }
 
 export function loadConfig(overrides: Partial<AppConfig> = {}): AppConfig {
@@ -46,7 +56,7 @@ export function loadConfig(overrides: Partial<AppConfig> = {}): AppConfig {
     enableTimeTravel: bool(env.ENABLE_TIME_TRAVEL, false),
     enableIpOverride: bool(env.ENABLE_IP_OVERRIDE, false),
     requireApproval: bool(env.REQUIRE_APPROVAL, true),
-    trustProxy: trustProxy(env.TRUST_PROXY),
+    trustProxy: parseTrustProxy(env.TRUST_PROXY),
     labIps: (env.LAB_IPS ?? '127.0.0.1')
       .split(',')
       .map((s) => s.trim())

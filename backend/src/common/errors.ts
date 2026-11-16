@@ -9,6 +9,7 @@ export enum ErrorCode {
   IP_DENIED = 'IP_DENIED',
   AUTH_REQUIRED = 'AUTH_REQUIRED',
   AUTH_INVALID_CREDENTIALS = 'AUTH_INVALID_CREDENTIALS',
+  AUTH_TOO_MANY_ATTEMPTS = 'AUTH_TOO_MANY_ATTEMPTS',
   FORBIDDEN = 'FORBIDDEN',
 
   // 출퇴근
@@ -45,6 +46,7 @@ export enum ErrorCode {
 
   // 기타
   HOLIDAY_EXISTS = 'HOLIDAY_EXISTS',
+  HOLIDAY_HAS_REQUESTS = 'HOLIDAY_HAS_REQUESTS',
 }
 
 export const ERROR_MESSAGES: Record<ErrorCode, string> = {
@@ -54,6 +56,7 @@ export const ERROR_MESSAGES: Record<ErrorCode, string> = {
   IP_DENIED: '허용되지 않은 IP입니다.',
   AUTH_REQUIRED: '로그인이 필요합니다.',
   AUTH_INVALID_CREDENTIALS: '아이디 또는 비밀번호가 올바르지 않습니다.',
+  AUTH_TOO_MANY_ATTEMPTS: '로그인 시도가 너무 많습니다. 잠시 후 다시 시도해 주세요.',
   FORBIDDEN: '권한이 없습니다.',
 
   ATT_TOO_EARLY: '출근은 07:00부터 등록할 수 있습니다.',
@@ -90,6 +93,7 @@ export const ERROR_MESSAGES: Record<ErrorCode, string> = {
   REQ_NOT_OWNER: '본인 신청만 처리할 수 있습니다.',
 
   HOLIDAY_EXISTS: '이미 등록된 공휴일입니다.',
+  HOLIDAY_HAS_REQUESTS: '이 날짜에 진행 중이거나 승인된 신청이 있어 공휴일을 바꿀 수 없습니다. 신청을 먼저 반려·취소해 주세요.',
 };
 
 const DEFAULT_STATUS: Partial<Record<ErrorCode, number>> = {
@@ -98,6 +102,7 @@ const DEFAULT_STATUS: Partial<Record<ErrorCode, number>> = {
   IP_DENIED: HttpStatus.FORBIDDEN,
   AUTH_REQUIRED: HttpStatus.UNAUTHORIZED,
   AUTH_INVALID_CREDENTIALS: HttpStatus.UNAUTHORIZED,
+  AUTH_TOO_MANY_ATTEMPTS: HttpStatus.TOO_MANY_REQUESTS,
   FORBIDDEN: HttpStatus.FORBIDDEN,
   REQ_NOT_OWNER: HttpStatus.FORBIDDEN,
   ATT_ALREADY_CHECKED_IN: HttpStatus.CONFLICT,
@@ -105,6 +110,7 @@ const DEFAULT_STATUS: Partial<Record<ErrorCode, number>> = {
   ATT_PENDING_CHECKOUT_REQUIRED: HttpStatus.CONFLICT,
   REQ_DUPLICATE: HttpStatus.CONFLICT,
   HOLIDAY_EXISTS: HttpStatus.CONFLICT,
+  HOLIDAY_HAS_REQUESTS: HttpStatus.CONFLICT,
 };
 
 export interface ErrorBody {

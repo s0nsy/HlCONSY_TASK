@@ -7,7 +7,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AttendanceController } from './attendance/attendance.controller.js';
 import { AttendanceService } from './attendance/attendance.service.js';
 import { AuthController } from './auth/auth.controller.js';
-import { AuthGuard, RolesGuard } from './auth/auth.guards.js';
+import { minutes, ThrottlerModule } from '@nestjs/throttler';
+import { AuthGuard, LoginThrottlerGuard, RolesGuard } from './auth/auth.guards.js';
 import { AuthService } from './auth/auth.service.js';
 import { BalanceController } from './balance/balance.controller.js';
 import { BalanceService } from './balance/balance.service.js';
@@ -55,9 +56,13 @@ export class CommonModule {}
       inject: [APP_CONFIG],
       useFactory: (c: AppConfig) => ({ secret: c.jwtSecret, signOptions: { expiresIn: '12h' } }),
     }),
+    // 로그인 시도 제한 (LoginThrottlerGuard 가 로그인 라우트에만 적용)
+    ThrottlerModule.forRoot({
+      throttlers: [{ ttl: minutes(1), limit: 10, blockDuration: minutes(5) }],
+    }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, IpGuard, AuthGuard, RolesGuard],
+  providers: [AuthService, IpGuard, AuthGuard, RolesGuard, LoginThrottlerGuard],
   exports: [AuthService, IpGuard, AuthGuard, RolesGuard],
 })
 export class AuthModule {}

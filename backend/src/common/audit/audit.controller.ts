@@ -1,9 +1,9 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { z } from 'zod';
+import { DateStr } from '../schemas.js';
 import { Audit, type AuthUser, CurrentUser } from '../decorators.js';
 import { AuditService } from './audit.service.js';
 
-const DateStr = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const SearchQuery = z.object({
   userId: z.coerce.number().int().positive().optional(),
   action: z.string().max(50).optional(),
