@@ -8,7 +8,7 @@ import { AttendanceController } from './attendance/attendance.controller.js';
 import { AttendanceService } from './attendance/attendance.service.js';
 import { AuthController } from './auth/auth.controller.js';
 import { minutes, ThrottlerModule } from '@nestjs/throttler';
-import { AuthGuard, LoginThrottlerGuard, RolesGuard } from './auth/auth.guards.js';
+import { AuthGuard, LoginThrottlerGuard, loginTrackerByUser, RolesGuard } from './auth/auth.guards.js';
 import { AuthService } from './auth/auth.service.js';
 import { BalanceController } from './balance/balance.controller.js';
 import { BalanceService } from './balance/balance.service.js';
@@ -58,7 +58,10 @@ export class CommonModule {}
     }),
     // 로그인 시도 제한 (LoginThrottlerGuard 가 로그인 라우트에만 적용)
     ThrottlerModule.forRoot({
-      throttlers: [{ ttl: minutes(1), limit: 10, blockDuration: minutes(5) }],
+      throttlers: [
+        { name: 'ipUser', ttl: minutes(1), limit: 10, blockDuration: minutes(5) },
+        { name: 'user', ttl: minutes(10), limit: 30, blockDuration: minutes(10), getTracker: loginTrackerByUser },
+      ],
     }),
   ],
   controllers: [AuthController],

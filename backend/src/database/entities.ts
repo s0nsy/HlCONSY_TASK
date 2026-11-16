@@ -4,6 +4,7 @@ import { AuditLog } from '../common/audit/audit-log.entity.js';
 import { Holiday } from '../common/calendar/holiday.entity.js';
 import { AllowedIp } from '../common/ip/allowed-ip.entity.js';
 import { WorkRequest } from '../requests/request.entity.js';
+import { RevokedToken } from '../auth/revoked-token.entity.js';
 import { User } from '../users/user.entity.js';
 
 export const ENTITIES = [
@@ -14,4 +15,5 @@ export const ENTITIES = [
   WorkRequest,
   BalanceLedger,
   AuditLog,
+  RevokedToken,
 ];

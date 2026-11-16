@@ -45,14 +45,37 @@ export function parseTrustProxy(v: string | undefined): boolean | number | strin
   return s;
 }
 
+/** 레포에 공개된 개발용 서명 키 (.env.development). 운영에서 이 값으로는 시작하지 않는다 */
+export const DEV_JWT_SECRET = 'dev-only-secret-change-me';
+
+/**
+ * 운영(NODE_ENV=production, Docker 이미지가 설정)에서 JWT_SECRET 이 없거나 공개된 개발용 값·32자 미만이면
+ * 시작을 막는다. 키가 알려지면 누구나 리드 토큰을 만들 수 있기 때문. 로컬 개발(npm run dev)은 영향 없음.
+ */
+export function assertJwtSecret(secret: string, nodeEnv = process.env.NODE_ENV): void {
+  if (nodeEnv !== 'production') return;
+  if (secret === DEV_JWT_SECRET || secret.length < 32) {
+    throw new Error(
+      'JWT_SECRET 이 없거나 안전하지 않습니다. 운영에서는 32자 이상의 무작위 값을 지정하세요 ' +
+        '(예: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))").',
+    );
+  }
+}
+
 export function loadConfig(overrides: Partial<AppConfig> = {}): AppConfig {
+  const config = readConfig(overrides);
+  assertJwtSecret(config.jwtSecret);
+  return config;
+}
+
+function readConfig(overrides: Partial<AppConfig>): AppConfig {
   const env = process.env;
   return {
     port: Number(env.PORT ?? 3000),
     databasePath:
       env.DATABASE_PATH ??
       join(import.meta.dirname, '..', '..', 'data', 'hiconsy.sqlite'),
-    jwtSecret: env.JWT_SECRET ?? 'dev-only-secret-change-me',
+    jwtSecret: env.JWT_SECRET || DEV_JWT_SECRET,
     enableTimeTravel: bool(env.ENABLE_TIME_TRAVEL, false),
     enableIpOverride: bool(env.ENABLE_IP_OVERRIDE, false),
     requireApproval: bool(env.REQUIRE_APPROVAL, true),

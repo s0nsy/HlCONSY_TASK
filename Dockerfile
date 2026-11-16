@@ -1,5 +1,6 @@
 # hiconsy 데모 이미지: API(NestJS) + 화면(Vue 빌드)을 한 서버에서 서빙한다.
-# 로컬 확인:  docker build -t hiconsy . && docker run --rm -p 3000:10000 hiconsy  → http://localhost:3000
+# 로컬 확인:  docker build -t hiconsy . && docker run --rm -p 3000:10000 -e JWT_SECRET=<32자 이상 무작위 값> hiconsy  → http://localhost:3000
+# (NODE_ENV=production 이라 JWT_SECRET 이 없으면 시작하지 않는다)
 
 # ── 1단계: 빌드 ──
 FROM node:24-bookworm-slim AS build

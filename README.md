@@ -69,19 +69,19 @@ GitHub Actions 가 push·PR 마다 `npm ci → lint → test → build` 를 실�
 
 `backend/.env.development`(레포 포함)에 개발 기본값이 있어 **설정 없이 바로 실행됩니다.** 바꾸려면 `backend/.env` 를 만들면 그 값이 우선합니다.
 
-| 변수                          | 개발 기본값                   | 설명                                                                    |
-| ----------------------------- | ----------------------------- | ----------------------------------------------------------------------- |
-| `PORT`                        | `3000`                        | API 포트                                                                |
-| `ENABLE_TIME_TRAVEL`          | `true`                        | 서버 시각 조작·시나리오 재현 API(`/api/dev/*`) 등록. 운영에서는 `false` |
-| `ENABLE_IP_OVERRIDE`          | `true`                        | `X-Debug-Client-IP` 헤더로 클라이언트 IP 위장 허용. 운영에서는 `false`  |
-| `REQUIRE_APPROVAL`            | `true`                        | `true`: 리드가 승인한 신청만 효력 / `false`: 제출 즉시 승인             |
-| `TRUST_PROXY`                 | `false`                       | express `trust proxy`. 프록시 뒤면 단계 수(예: `1`)로 설정. `true` 는 X-Forwarded-For 위조로 IP 제한이 뚫려 쓰지 않음 |
-| `LAB_IPS`                     | `127.0.0.1`                   | 연구실 IP (쉼표 구분)                                                   |
-| `JWT_SECRET`                  | 개발용 값                     | 로그인 쿠키(JWT) 서명 키                                                |
-| `COOKIE_SECURE`               | `false`                       | HTTPS 환경에서 `true`                                                   |
-| `DATABASE_PATH`               | `backend/data/hiconsy.sqlite` | SQLite 파일 경로                                                        |
-| `STATIC_DIR`                  | –                             | 빌드된 화면 경로. 지정하면 API 서버가 화면도 서빙 (배포용)              |
-| `OBSERVE_APP_KEY` / `_SECRET` | –                             | NestJS Observe 모니터링. 둘 다 있을 때만 활성화                         |
+| 변수                          | 개발 기본값                   | 설명                                                                                                                                                |
+| ----------------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PORT`                        | `3000`                        | API 포트                                                                                                                                            |
+| `ENABLE_TIME_TRAVEL`          | `true`                        | 서버 시각 조작·시나리오 재현 API(`/api/dev/*`) 등록. 운영에서는 `false`                                                                             |
+| `ENABLE_IP_OVERRIDE`          | `true`                        | `X-Debug-Client-IP` 헤더로 클라이언트 IP 위장 허용. 운영에서는 `false`                                                                              |
+| `REQUIRE_APPROVAL`            | `true`                        | `true`: 리드가 승인한 신청만 효력 / `false`: 제출 즉시 승인                                                                                         |
+| `TRUST_PROXY`                 | `false`                       | express `trust proxy`. 프록시 뒤면 단계 수(예: `1`)로 설정. `true` 는 X-Forwarded-For 위조로 IP 제한이 뚫려 쓰지 않음                               |
+| `LAB_IPS`                     | `127.0.0.1`                   | 연구실 IP (쉼표 구분)                                                                                                                               |
+| `JWT_SECRET`                  | 개발용 값                     | 로그인 쿠키(JWT) 서명 키. 운영(`NODE_ENV=production`, Docker 이미지)에서는 **32자 이상 무작위 값 필수** — 없거나 개발용 값이면 서버가 시작하지 않음 |
+| `COOKIE_SECURE`               | `false`                       | HTTPS 환경에서 `true`                                                                                                                               |
+| `DATABASE_PATH`               | `backend/data/hiconsy.sqlite` | SQLite 파일 경로                                                                                                                                    |
+| `STATIC_DIR`                  | –                             | 빌드된 화면 경로. 지정하면 API 서버가 화면도 서빙 (배포용)                                                                                          |
+| `OBSERVE_APP_KEY` / `_SECRET` | –                             | NestJS Observe 모니터링. 둘 다 있을 때만 활성화                                                                                                     |
 
 ### 1.5 (추가) 데모 배포
 
@@ -91,7 +91,14 @@ GitHub Actions 가 push·PR 마다 `npm ci → lint → test → build` 를 실�
 
 - 무료 인스턴스라 한동안 접속이 없으면 첫 로딩에 30초 정도 걸리고, 재배포 시 데이터가 시드 상태로 초기화됩니다.
 - 서버 시각은 서버 전체가 공유하므로 여러 명이 동시에 시각을 바꾸면 서로 영향을 줍니다. 정확한 검증은 로컬 실행을 권장합니다.
-- 같은 이미지를 로컬에서 실행: `docker build -t hiconsy . && docker run --rm -p 3000:10000 -e ENABLE_TIME_TRAVEL=true -e ENABLE_IP_OVERRIDE=true hiconsy` → <http://localhost:3000>
+- 같은 이미지를 로컬에서 실행 (이미지는 운영 모드라 `JWT_SECRET` 이 필요합니다):
+  ```bash
+  docker build -t hiconsy .
+  docker run --rm -p 3000:10000 \
+    -e JWT_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))") \
+    -e ENABLE_TIME_TRAVEL=true -e ENABLE_IP_OVERRIDE=true hiconsy
+  ```
+  → <http://localhost:3000>
 
 ---
 
@@ -101,17 +108,18 @@ Vue 3 · NestJS · TypeORM + SQLite · dayjs 는 요구사항에서 지정되었
 
 ### Backend
 
-| 기술                                  | 선택 이유                                                                                                                                             |
-| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **NestJS 12** (ESM)                   | _요구사항._ 가드·인터셉터·필터를 전역으로 걸 수 있어 "모든 요청에 IP 검사", "모든 인터랙션 이력" 같은 횡단 관심사를 기능 코드와 분리할 수 있었습니다. |
-| **TypeORM + SQLite (better-sqlite3)** | _요구사항._ 별도 DB 설치 없이 `npm install` 만으로 실행되게 하기 위함입니다. 엔티티는 PostgreSQL 로 그대로 옮길 수 있는 타입만 사용했습니다.          |
-| **dayjs + utc/timezone**              | _요구사항._ 타임존을 `Asia/Seoul` 로 고정하고, 모든 시각 계산을 `ClockService` 한 곳에서 시작하게 했습니다.                                           |
-| **Zod**                               | 요청 검증 스키마에서 타입을 추론해 DTO 를 따로 만들지 않아도 됩니다. Nest 의 Standard Schema 검증 파이프(`@Body({ schema })`)로 바로 연결됩니다.      |
-| **JWT (HttpOnly 쿠키)**               | 세션 저장소 없이 서버를 단순하게 유지하면서, 토큰을 JS 에서 읽을 수 없게 해 XSS 로 탈취되지 않게 했습니다.                                            |
-| **bcryptjs**                          | 비밀번호 해시. 네이티브 빌드가 없어 OS 와 관계없이 설치가 실패하지 않습니다.                                                                          |
-| **pdfmake**                           | 신청서 PDF. 헤드리스 브라우저(puppeteer) 없이 가볍게 생성하고, 한글 폰트(Noto Sans KR)를 임베드합니다.                                                |
-| **Vitest + supertest**                | NestJS 12 가 ESM 전용이라 Jest 보다 설정 없이 안정적으로 동작합니다. API 는 Jest 와 같습니다.                                                         |
-| **oxlint + Prettier**                 | type-aware 린트를 빠르게 돌려 CI 시간을 줄였습니다.                                                                                                   |
+| 기술                                  | 선택 이유                                                                                                                                                                                                            |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **NestJS 12** (ESM)                   | _요구사항._ 가드·인터셉터·필터를 전역으로 걸 수 있어 "모든 요청에 IP 검사", "모든 인터랙션 이력" 같은 횡단 관심사를 기능 코드와 분리할 수 있었습니다.                                                                |
+| **TypeORM + SQLite (better-sqlite3)** | _요구사항._ 별도 DB 설치 없이 `npm install` 만으로 실행되게 하기 위함입니다. 엔티티는 PostgreSQL 로 그대로 옮길 수 있는 타입만 사용했습니다.                                                                         |
+| **dayjs + utc/timezone**              | _요구사항._ 타임존을 `Asia/Seoul` 로 고정하고, 모든 시각 계산을 `ClockService` 한 곳에서 시작하게 했습니다.                                                                                                          |
+| **Zod**                               | 요청 검증 스키마에서 타입을 추론해 DTO 를 따로 만들지 않아도 됩니다. Nest 의 Standard Schema 검증 파이프(`@Body({ schema })`)로 바로 연결됩니다.                                                                     |
+| **JWT (HttpOnly 쿠키)**               | 세션 저장소 없이 서버를 단순하게 유지하면서, 토큰을 JS 에서 읽을 수 없게 해 XSS 로 탈취되지 않게 했습니다. 토큰 하나(12시간)만 쓰고, 로그아웃한 토큰은 `revoked_token` 에 넣어 만료 전에도 다시 쓸 수 없게 했습니다. |
+| **@nestjs/throttler**                 | 로그인 시도 제한. 같은 IP+아이디 1분 10회, 아이디 기준 10분 30회를 넘기면 429. 연구실은 팀원이 IP 하나를 같이 써서 IP 만으로는 세지 않습니다.                                                                        |
+| **bcryptjs**                          | 비밀번호 해시. 네이티브 빌드가 없어 OS 와 관계없이 설치가 실패하지 않습니다.                                                                                                                                         |
+| **pdfmake**                           | 신청서 PDF. 헤드리스 브라우저(puppeteer) 없이 가볍게 생성하고, 한글 폰트(Noto Sans KR)를 임베드합니다.                                                                                                               |
+| **Vitest + supertest**                | NestJS 12 가 ESM 전용이라 Jest 보다 설정 없이 안정적으로 동작합니다. API 는 Jest 와 같습니다.                                                                                                                        |
+| **oxlint + Prettier**                 | type-aware 린트를 빠르게 돌려 CI 시간을 줄였습니다.                                                                                                                                                                  |
 
 ### Frontend
 
@@ -305,6 +313,10 @@ erDiagram
     string label
     string createdAt
   }
+  revoked_token {
+    string jti PK
+    int expiresAt
+  }
 ```
 
 | 테이블           | 역할                                                | 인덱스                      |
@@ -316,6 +328,7 @@ erDiagram
 | `audit_log`      | 모든 요청 이력 (서버 시각·실제 시각)                | `(userId, serverTime)`      |
 | `holiday`        | 공휴일 (리드가 화면에서 관리)                       | `date` PK                   |
 | `allowed_ip`     | 연구실 IP                                           | `ip` UNIQUE                 |
+| `revoked_token`  | 로그아웃한 토큰(jti). 원래 만료 시각이 지나면 삭제  | `jti` PK                    |
 
 ### 설계 이유
 
